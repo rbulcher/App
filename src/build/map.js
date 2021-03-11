@@ -1,10 +1,13 @@
 mapboxgl.accessToken =
 "pk.eyJ1IjoicnlhbmJ1bGNoZXIiLCJhIjoiY2tsd2w3OTA3MDBmZzJ1azJrNzU2ZWd1eiJ9.VyczYMv752tJuJd4cjsKhg"
-
+var loader = document.getElementById('loader');
+var mapDiv = document.getElementById('map');
+mapDiv.style.opacity = 0.25;
 navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
 enableHighAccuracy: true
 })
 var userLocation = [-84.74232, 39.51019];
+
 function successLocation(position) {
 userLocation = [position.coords.longitude, position.coords.latitude]
 setupMap(userLocation)
@@ -14,6 +17,7 @@ setupMap(userLocation)
 
 function errorLocation() {
 setupMap(userLocation)
+alert("Location services needs to be enabled to properly work. Defaulted to Oxford, Ohio")
 //If browser declines location: 
 //default location Oxford, Ohio
 
@@ -28,7 +32,8 @@ const map = new mapboxgl.Map({
 var canvas = map.getCanvasContainer();
 
 function setupMap(center) {
-
+  mapDiv.style.opacity = 1;
+  loader.style.display = 'none';
   map.flyTo({
     center: userLocation,
     zoom:15
@@ -37,20 +42,19 @@ function setupMap(center) {
 const nav = new mapboxgl.NavigationControl()
 map.addControl(nav)
 
-var directions = new MapboxDirections({
-  accessToken: mapboxgl.accessToken
-})
+var geolocate = new mapboxgl.GeolocateControl({
+  positionOptions: {
+  enableHighAccuracy: true
+  },
+  trackUserLocation: true
+  });
+  // Add the control to the map.
+  map.addControl(geolocate);
 
-//map.addControl(directions, "top-left")
+  geolocate.on('geolocate', (e) => {
+    console.log(e)
+});
 
-map.addControl(
-new mapboxgl.GeolocateControl({
-positionOptions: {
-enableHighAccuracy: true
-},
-trackUserLocation: true,
-})
-);
 
 }
 
@@ -107,7 +111,6 @@ function getRoute(end) {
     var instructions = document.getElementById('instructions');
 var steps = data.legs[0].steps;
 
-console.log(steps)
 var tripInstructions = [];
 if(steps.length !== 0 && data.duration !== 0) {
   instructions.style.display = 'block';

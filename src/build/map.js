@@ -10,6 +10,8 @@ userLocation = [position.coords.longitude, position.coords.latitude]
 setupMap(userLocation)
 }
 
+
+
 function errorLocation() {
 setupMap(userLocation)
 //If browser declines location: 
@@ -22,6 +24,8 @@ const map = new mapboxgl.Map({
   zoom: 8,
   center: userLocation
 })
+
+var canvas = map.getCanvasContainer();
 
 function setupMap(center) {
 
@@ -103,11 +107,12 @@ function getRoute(end) {
     var instructions = document.getElementById('instructions');
 var steps = data.legs[0].steps;
 
+console.log(steps)
 var tripInstructions = [];
-console.log(steps.length)
-if(steps.length !== 0) {
+if(steps.length !== 0 && data.duration !== 0) {
   instructions.style.display = 'block';
 }
+
 for (var i = 0; i < steps.length; i++) {
   tripInstructions.push('<br><li>' + steps[i].maneuver.instruction) + '</li>';
   instructions.innerHTML = '<span class="duration">Trip duration: ' + Math.floor(data.duration / 60) + ' min  </span>' + tripInstructions;
@@ -117,7 +122,37 @@ for (var i = 0; i < steps.length; i++) {
   
 }
 
-var canvas = map.getCanvasContainer();
+map.on('load', function () {
+  // make an initial directions request that
+  // starts and ends at the same location
+  getRoute(userLocation);
+
+  // Add destination to the map
+  map.addLayer({
+    'id': 'point',
+    'type': 'circle',
+    'source': {
+      'type': 'geojson',
+      'data': {
+        'type': 'FeatureCollection',
+        'features': [
+          {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+              'type': 'Point',
+              'coordinates': userLocation
+            }
+          }
+        ]
+      }
+    },
+    'paint': {
+      'circle-radius': 0
+    }
+  });
+
+
 
 map.on('click', function(e) {
   var coordsObj = e.lngLat;
@@ -165,5 +200,4 @@ map.on('click', function(e) {
   }
   getRoute(coords);
 });
-
-
+});

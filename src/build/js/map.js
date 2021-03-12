@@ -10,13 +10,13 @@ var userLocation = [-84.74232, 39.51019];
 
 function successLocation(position) {
 userLocation = [position.coords.longitude, position.coords.latitude]
-setupMap(userLocation)
+setupMap()
 }
 
 
 
 function errorLocation() {
-setupMap(userLocation)
+setupMap()
 alert("Location services needs to be enabled to properly work. Defaulted to Oxford, Ohio")
 //If browser declines location: 
 //default location Oxford, Ohio
@@ -31,7 +31,7 @@ const map = new mapboxgl.Map({
 
 var canvas = map.getCanvasContainer();
 
-function setupMap(center) {
+function setupMap() {
   mapDiv.style.opacity = 1;
   loader.style.display = 'none';
   map.flyTo({

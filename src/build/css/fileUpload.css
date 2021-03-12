@@ -1,0 +1,21 @@
+#entries {
+    width: 40%;
+    margin: 0 auto;
+  }
+#entries > div {
+    margin-top: 20px;
+    background:rgb(69,69,69);
+    padding: 12px;
+    border-radius: 4px;
+  }
+#entries > div > h4 {
+    color:white;
+    word-wrap: break-word;
+  }
+  #entries > div > p {
+      color:white;
+    word-wrap: break-word;
+  }
+  #entries > div:not(:last-child) {
+    margin-bottom: 8px;
+  }

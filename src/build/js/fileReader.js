@@ -15,6 +15,8 @@ document.getElementById('input-file')
     })
 
     var userLocation = [-84.74232, 39.51019];
+    const addressesElement = document.getElementById('entries')
+
 function successLocation(position) {
     userLocation = [position.coords.longitude, position.coords.latitude]
 }
@@ -61,7 +63,7 @@ document.getElementById("submitData").addEventListener("click", function(event){
     
     // SEND DATA TO DB HERE
 
-    var textArea = document.getElementById('content-target')
+    
     if(textArea.value != ''){
         alert("Data Sent");
         textArea.value = '';
@@ -89,9 +91,14 @@ async function getGeoCode(address) {
     var addressLatitude = jsonResponse.features[0].geometry.coordinates[0]
     let longLat = [addressLongitude, addressLatitude];
 
-    var target = document.getElementById('content-target')
-    
-       target.value += address + " - Longitude: " + longLat[0] + " Latitude: " + longLat[1] + "\n"
-    
+       const div = document.createElement('div');
+       const header = document.createElement('h4');
+       const contents = document.createElement('p')
+       header.textContent = address;
+       contents.textContent = "Longitude: " + longLat[0] + " Latitude: " + longLat[1]
+       div.appendChild(header);
+       div.appendChild(contents)
+       addressesElement.appendChild(div);
+
   });
 }

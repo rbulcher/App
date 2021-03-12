@@ -7,9 +7,9 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="css/fileUpload.css">
     <title>Hello, world!</title>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color:rgb(69, 69, 69)">
       <a class="navbar-brand" href="/index.html">Map</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -38,7 +38,7 @@
     </nav>
   </head>
   <body>
-    <div style="width:50%; margin:0 auto;">
+    <div style="width:40%; margin:0 auto; padding-top: 6vh;">
       <form>
         <p>Address File:</p>
         <input type="file" id="input-file" name="file">
@@ -48,9 +48,7 @@
       </form>
 
 </div>
-<div style="margin-top: 20px;">
-<textarea readonly style="width: 50%; height: 70vh;margin-left: 25%;" id="content-target"></textarea>
-</div>
+<div id="entries" ></div>
     <!-- Optional JavaScript -->
     <script src="js/fileReader.js"></script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

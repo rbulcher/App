@@ -2,17 +2,14 @@ const mongoose = require('mongoose')
 
 const { Schema } = mongoose;
 
-const requiredString = {
-    type: String,
-    required: true,
-}
-
 const logEntrySchema = new Schema({
-    title: requiredString,
+    address: {type: String, required: true},
+    deliverDateAndType: {type: String, required: true},
     description: String,
-    comments: String,
-    deliverDate: String,
-    address: String,
+    location: {
+        longitude: { type: Number, required: true },
+         latitude: { type: Number, required: true },
+    },
 },
 {
     timestamps: true

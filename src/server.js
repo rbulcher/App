@@ -4,6 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const port = process.env.PORT || 1337;
 
+
 require('dotenv').config();
 
 const middlewares = require('./middlewares');
@@ -11,6 +12,7 @@ const logs = require('./api/logs');
 
 const app = express();
 const path = require('path')
+
 
 mongoose.connect(process.env.DATABASE_URL,{
     useNewUrlParser: true,

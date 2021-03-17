@@ -1,3 +1,4 @@
+/* this is for the file upload pagee */
 #entries {
     width: 40%;
     margin: 0 auto;
@@ -19,5 +20,31 @@
     white-space: pre;
   }
   #entries > div:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+/* this is for the route display page */
+  #routes {
+    width: 40%;
+    margin: 0 auto;
+    
+  }
+#routes > div {
+    margin-top: 20px;
+    background:rgb(69,69,69);
+    padding: 12px;
+    border-radius: 4px;
+  }
+#routes > div > h4 {
+    color:white;
+    word-wrap: break-word;
+  }
+  #routes > div > p {
+    overflow-wrap: normal;
+      color:white;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  #routes > div:not(:last-child) {
     margin-bottom: 8px;
   }

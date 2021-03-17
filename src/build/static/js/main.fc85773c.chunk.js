@@ -1,2 +1,117 @@
-(this.webpackJsonpclient=this.webpackJsonpclient||[]).push([[0],{33:function(e,t,c){},41:function(e,t,c){"use strict";c.r(t);var a=c(0),n=c.n(a),r=c(12),i=c.n(r),s=(c(33),c(48)),l=c(49),d=c(47),j=(c(34),c(7)),o=function(){return Object(j.jsxs)(s.a,{bg:"light",fixed:"top",expand:"lg",children:[Object(j.jsx)(s.a.Brand,{href:"#home",children:"Route Planner"}),Object(j.jsx)(s.a.Toggle,{"aria-controls":"basic-navbar-nav"}),Object(j.jsx)(s.a.Collapse,{id:"basic-navbar-nav",children:Object(j.jsxs)(l.a,{className:"mr-auto",children:[Object(j.jsx)(l.a.Link,{href:"#home",children:"Home"}),Object(j.jsx)(l.a.Link,{href:"/uploadFile.html",children:"Upload Addresses"}),Object(j.jsxs)(d.a,{title:"More",id:"basic-nav-dropdown",children:[Object(j.jsx)(d.a.Item,{href:"#action/3.1",children:"Reset Map"}),Object(j.jsx)(d.a.Item,{href:"#action/3.2",children:"View All Addresses"}),Object(j.jsx)(d.a.Divider,{}),Object(j.jsx)(d.a.Item,{href:"https://github.com/rbulcher/App",target:"__blank",children:"View Source"})]})]})})]})};i.a.render(Object(j.jsx)(n.a.StrictMode,{children:Object(j.jsx)(o,{})}),document.getElementById("root"))}},[[41,1,2]]]);
+(this.webpackJsonpclient = this.webpackJsonpclient || []).push([
+  [0],
+  {
+    33: function (e, t, c) {},
+    41: function (e, t, c) {
+      "use strict";
+      c.r(t);
+      var a = c(0),
+        n = c.n(a),
+        r = c(12),
+        i = c.n(r),
+        s = (c(33), c(48)),
+        l = c(49),
+        d = c(47),
+        j = (c(34), c(7)),
+        o = function () {
+          return Object(j.jsxs)(s.a, {
+            bg: "light",
+            fixed: "top",
+            expand: "lg",
+            children: [
+              Object(j.jsx)(s.a.Brand, {
+                href: "#home",
+                children: "Route Planner",
+              }),
+              Object(j.jsx)(s.a.Toggle, {
+                "aria-controls": "basic-navbar-nav",
+              }),
+              Object(j.jsx)(s.a.Collapse, {
+                id: "basic-navbar-nav",
+                children: Object(j.jsxs)(l.a, {
+                  className: "mr-auto",
+                  children: [
+                    Object(j.jsx)(l.a.Link, {
+                      href: "#home",
+                      children: "Home",
+                    }),
+                    Object(j.jsx)(l.a.Link, {
+                      href: "/uploadFile.html",
+                      children: "Upload Addresses",
+                    }),
+                    Object(j.jsxs)(d.a, {
+                      title: "Start Route",
+                      id: "basic-nav-dropdown",
+                      children: [
+                        Object(j.jsx)(d.a.Item, {
+                          href: "#monday",
+                          onClick: routeMonday,
+                          children: "Monday",
+                        }),
+                        Object(j.jsx)(d.a.Item, {
+                          href: "#tuesday",
+                          onClick: routeTuesday,
+                          children: "Tuesday",
+                        }),
+                        Object(j.jsx)(d.a.Item, {
+                          href: "#wednesday",
+                          onClick: routeWednesday,
+                          children: "Wednesday",
+                        }),
+                        Object(j.jsx)(d.a.Item, {
+                          href: "#thursday",
+                          onClick: routeThursday,
+                          children: "Thursday",
+                        }),
+                        Object(j.jsx)(d.a.Item, {
+                          href: "#friday",
+                          onClick: routeFriday,
+                          children: "Friday",
+                        }),
+                        Object(j.jsx)(d.a.Item, {
+                          href: "#saturday",
+                          onClick: routeSaturday,
+                          children: "Saturday",
+                        }),
+                        Object(j.jsx)(d.a.Item, {
+                          href: "#sunday",
+                          onClick: routeSunday,
+                          children: "Sunday",
+                        }),
+                      ],
+                    }),
+                    Object(j.jsxs)(d.a, {
+                      title: "More",
+                      id: "basic-nav-dropdown",
+                      children: [
+                        Object(j.jsx)(d.a.Item, {
+                          href: "/allRoutes.html",
+                          children: "View All Routes",
+                        }),
+                        Object(j.jsx)(d.a.Item, {
+                          href: "#",
+                          children: "Edit Addresses",
+                        }),
+                        Object(j.jsx)(d.a.Divider, {}),
+                        Object(j.jsx)(d.a.Item, {
+                          href: "https://github.com/rbulcher/App",
+                          target: "__blank",
+                          children: "View Source",
+                        }),
+                      ],
+                    }),
+                  ],
+                }),
+              }),
+            ],
+          });
+        };
+      i.a.render(
+        Object(j.jsx)(n.a.StrictMode, { children: Object(j.jsx)(o, {}) }),
+        document.getElementById("root")
+      );
+    },
+  },
+  [[41, 1, 2]],
+]);
 //# sourceMappingURL=main.fc85773c.chunk.js.map

@@ -236,7 +236,8 @@ async function getGeoCode(address) {
       div.appendChild(contents);
       addressesElement.appendChild(div);
 
-      console.log(contents.textContent);
       geoCodes.push(contents.textContent);
     });
 }
+
+

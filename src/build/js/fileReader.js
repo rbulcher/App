@@ -1,11 +1,7 @@
 var accessToken =
   "pk.eyJ1IjoicnlhbmJ1bGNoZXIiLCJhIjoiY2tsd2w3OTA3MDBmZzJ1azJrNzU2ZWd1eiJ9.VyczYMv752tJuJd4cjsKhg";
 
-const API_URL =
-  window.location.hostname === "127.0.0.1" ||
-  window.location.hostname === "localhost"
-    ? "http://localhost:1337/api/logs"
-    : "http://routeplan.xyz/api/logs";
+const API_URL = "https://www.routeplan.xyz/api/logs";
 
 document.getElementById("input-file").addEventListener("change", getFile);
 
@@ -146,6 +142,8 @@ document
 
     //SEND DATA TO DB
     try {
+      var sortedAddresses = [];
+      var unsortedAddresses = [];
       if (addresses.length > 0) {
         var message;
 
@@ -159,20 +157,11 @@ document
               latitude: geoCodes[i][1],
             },
           };
-
-          fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify(message),
-            headers: {
-              "content-type": "application/json",
-            },
-          })
-            .then((response) => response.json())
-            .then((createdMessage) => {
-              console.log(createdMessage);
-            });
+          unsortedAddresses.push(message);
         }
       }
+      sortedAddresses = sortAddresses(unsortedAddresses);
+      uploadSortedAddressesToDatabase(sortedAddresses);
 
       alert("Successfully loaded addresses");
       location.reload();
@@ -180,6 +169,27 @@ document
       alert("ERROR: " + error);
     }
   });
+
+function uploadSortedAddressesToDatabase(addresses) {
+  addresses.forEach((message) => {
+    console.log(message)
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(message),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((createdMessage) => {
+        console.log(createdMessage);
+      });
+  });
+}
+
+function sortAddresses(addresses) {
+  return addresses;
+}
 
 function getDeliveryDateAndType(
   monday,
@@ -239,5 +249,3 @@ async function getGeoCode(address) {
       geoCodes.push(contents.textContent);
     });
 }
-
-

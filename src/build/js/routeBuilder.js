@@ -2,7 +2,7 @@ const API_URL =
   window.location.hostname === "127.0.0.1" ||
   window.location.hostname === "localhost"
     ? "http://localhost:1337/api/logs"
-    : "http://routeplan.xyz/api/logs";
+    : "https://routeplan.xyz/api/logs";
 
     navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
         enableHighAccuracy: true,

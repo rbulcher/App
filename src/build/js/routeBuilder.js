@@ -56,7 +56,7 @@ function displayDayRoute(day, dayAbreviation) {
           div.appendChild(deliverDateAndType);
           div.appendChild(descriptionVal);
           displayRoutes.appendChild(div);
-
+          
         }
       });
   })

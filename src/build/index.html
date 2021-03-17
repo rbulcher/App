@@ -1,121 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
-    <link
-      href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
-      rel="stylesheet"
-    />
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
-    />
-    <title>Route Planner</title>
-    <link href="css/mapStyle.css" rel="stylesheet"/>
-    <link href="/static/css/2.fabbef47.chunk.css" rel="stylesheet" />
-    <link href="/static/css/main.9b5ce0f3.chunk.css" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <div id="loader"></div>
-    <div id="map" style="margin-top: 5vh"></div>
-    <div id="instructions"></div>
-    <script src="js/map.js"></script>
-    <script>
-      !(function (e) {
-        function t(t) {
-          for (
-            var n, l, i = t[0], f = t[1], a = t[2], p = 0, s = [];
-            p < i.length;
-            p++
-          )
-            (l = i[p]),
-              Object.prototype.hasOwnProperty.call(o, l) &&
-                o[l] &&
-                s.push(o[l][0]),
-              (o[l] = 0);
-          for (n in f)
-            Object.prototype.hasOwnProperty.call(f, n) && (e[n] = f[n]);
-          for (c && c(t); s.length; ) s.shift()();
-          return u.push.apply(u, a || []), r();
-        }
-        function r() {
-          for (var e, t = 0; t < u.length; t++) {
-            for (var r = u[t], n = !0, i = 1; i < r.length; i++) {
-              var f = r[i];
-              0 !== o[f] && (n = !1);
-            }
-            n && (u.splice(t--, 1), (e = l((l.s = r[0]))));
-          }
-          return e;
-        }
-        var n = {},
-          o = { 1: 0 },
-          u = [];
-        function l(t) {
-          if (n[t]) return n[t].exports;
-          var r = (n[t] = { i: t, l: !1, exports: {} });
-          return e[t].call(r.exports, r, r.exports, l), (r.l = !0), r.exports;
-        }
-        (l.m = e),
-          (l.c = n),
-          (l.d = function (e, t, r) {
-            l.o(e, t) ||
-              Object.defineProperty(e, t, { enumerable: !0, get: r });
-          }),
-          (l.r = function (e) {
-            "undefined" != typeof Symbol &&
-              Symbol.toStringTag &&
-              Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }),
-              Object.defineProperty(e, "__esModule", { value: !0 });
-          }),
-          (l.t = function (e, t) {
-            if ((1 & t && (e = l(e)), 8 & t)) return e;
-            if (4 & t && "object" == typeof e && e && e.__esModule) return e;
-            var r = Object.create(null);
-            if (
-              (l.r(r),
-              Object.defineProperty(r, "default", { enumerable: !0, value: e }),
-              2 & t && "string" != typeof e)
-            )
-              for (var n in e)
-                l.d(
-                  r,
-                  n,
-                  function (t) {
-                    return e[t];
-                  }.bind(null, n)
-                );
-            return r;
-          }),
-          (l.n = function (e) {
-            var t =
-              e && e.__esModule
-                ? function () {
-                    return e.default;
-                  }
-                : function () {
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+        <link
+            href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
+            rel="stylesheet"
+        />
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
+        />
+        <title>Route Planner</title>
+        <!-- ===== ICON ===== -->
+        <link
+            rel="shortcut icon"
+            href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACsklEQVRoQ+2Y8dEMQRDF3xcBIkAEiAARIAJEgAgQASJABIgAESACRIAIqF/ZqTpXt9Ovp2d9dVVf/3VVt9PTr7vf69490ZHbyZHHrzMAp13B2RW4Jem2pEuSzku6ugD8LOmnpG+S3kp6Nwv4DAAE+mwJnN+OAQYgjxZgzpmDz1QBPJb0cMn2SBAAeS7p6chhzowCINPvd1pk9P52jha7OVKNEQD0NcG77eKCgx93JAHGtiwAgv66QfAtYEBcy1QiC+DTxLZZyzIVAIRlGQBPJEHa/2GQmvtCcwFkWuf7oiwfdvoZ3txYFOtiGNXfmXHZaSUXwCtJd42L0XVksWfILnMjsteS7kUPuQB+GMSlb10FoSLwqWdU4cIMAKwGbwJHTub3XTiVQFaZ2KvmVCBqH3qe3WfEkM0eJ14svCkBgIzXO9GNZL+5i6rwcSF/CUCk/Zne3w8k4kI4E5wW+h30huOj56Lk37m8dIFBjJJ/BwBydq4TyJYt9CuSbwfA0ZM4klGkkLE/Ymy2PQmeIqOM85enNMjuSyKBJRklQ2QqsgwXIvlsd7FKwMESAA6jx1ciBMvUpOw9e2AsfJznywVrTNccEuPAaaN2EZxgI2WKtuWOjDPNmbzu2hHuQVzoAuDZaG+JkpX5396vMgAyVcgEe+hZK/vZCmS4UAEQLnC7zjMV4ByvhXxS2dIyapbiQAsagqIkW5j9Mt8uz1aAc7zgs144spoBmWqdCgDOIoVIZG/JywTP0obP7tA65HCkAs3PLD4QPL7cDwL/4KgAyA64tYqE+06vlFUAVRCl4EfmwFoyRoZcOfiZALKVmBL8bAAuiGnBbwGgTWu+pu1LbElt1np3BokP+WZ95k2qDbsvy27PRjvVtgLQJnb7Us17QHpIOUi3BODcX37mDEA5hUUHR1+BP8bGfjEsCdpwAAAAAElFTkSuQmCC"
+            type="image/x-icon"
+        />
+        <link href="css/mapStyle.css" rel="stylesheet" />
+        <link href="/static/css/2.fabbef47.chunk.css" rel="stylesheet" />
+        <link href="/static/css/main.9b5ce0f3.chunk.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div id="root"></div>
+        <div id="loader"></div>
+        <div id="map" style="margin-top: 5vh"></div>
+        <div id="instructions"></div>
+        <div class="extra"></div>
+        <script src="js/map.js"></script>
+        <script>
+            !(function (e) {
+                function t(t) {
+                    for (
+                        var n, l, i = t[0], f = t[1], a = t[2], p = 0, s = [];
+                        p < i.length;
+                        p++
+                    )
+                        (l = i[p]),
+                            Object.prototype.hasOwnProperty.call(o, l) &&
+                                o[l] &&
+                                s.push(o[l][0]),
+                            (o[l] = 0);
+                    for (n in f)
+                        Object.prototype.hasOwnProperty.call(f, n) &&
+                            (e[n] = f[n]);
+                    for (c && c(t); s.length; ) s.shift()();
+                    return u.push.apply(u, a || []), r();
+                }
+                function r() {
+                    for (var e, t = 0; t < u.length; t++) {
+                        for (var r = u[t], n = !0, i = 1; i < r.length; i++) {
+                            var f = r[i];
+                            0 !== o[f] && (n = !1);
+                        }
+                        n && (u.splice(t--, 1), (e = l((l.s = r[0]))));
+                    }
                     return e;
-                  };
-            return l.d(t, "a", t), t;
-          }),
-          (l.o = function (e, t) {
-            return Object.prototype.hasOwnProperty.call(e, t);
-          }),
-          (l.p = "/");
-        var i = (this.webpackJsonpclient = this.webpackJsonpclient || []),
-          f = i.push.bind(i);
-        (i.push = t), (i = i.slice());
-        for (var a = 0; a < i.length; a++) t(i[a]);
-        var c = f;
-        r();
-      })([]);
-    </script>
-    <script src="/static/js/2.887d45e5.chunk.js"></script>
-    <script src="/static/js/main.fc85773c.chunk.js"></script>
-  </body>
+                }
+                var n = {},
+                    o = { 1: 0 },
+                    u = [];
+                function l(t) {
+                    if (n[t]) return n[t].exports;
+                    var r = (n[t] = { i: t, l: !1, exports: {} });
+                    return (
+                        e[t].call(r.exports, r, r.exports, l),
+                        (r.l = !0),
+                        r.exports
+                    );
+                }
+                (l.m = e),
+                    (l.c = n),
+                    (l.d = function (e, t, r) {
+                        l.o(e, t) ||
+                            Object.defineProperty(e, t, {
+                                enumerable: !0,
+                                get: r,
+                            });
+                    }),
+                    (l.r = function (e) {
+                        "undefined" != typeof Symbol &&
+                            Symbol.toStringTag &&
+                            Object.defineProperty(e, Symbol.toStringTag, {
+                                value: "Module",
+                            }),
+                            Object.defineProperty(e, "__esModule", {
+                                value: !0,
+                            });
+                    }),
+                    (l.t = function (e, t) {
+                        if ((1 & t && (e = l(e)), 8 & t)) return e;
+                        if (4 & t && "object" == typeof e && e && e.__esModule)
+                            return e;
+                        var r = Object.create(null);
+                        if (
+                            (l.r(r),
+                            Object.defineProperty(r, "default", {
+                                enumerable: !0,
+                                value: e,
+                            }),
+                            2 & t && "string" != typeof e)
+                        )
+                            for (var n in e)
+                                l.d(
+                                    r,
+                                    n,
+                                    function (t) {
+                                        return e[t];
+                                    }.bind(null, n)
+                                );
+                        return r;
+                    }),
+                    (l.n = function (e) {
+                        var t =
+                            e && e.__esModule
+                                ? function () {
+                                      return e.default;
+                                  }
+                                : function () {
+                                      return e;
+                                  };
+                        return l.d(t, "a", t), t;
+                    }),
+                    (l.o = function (e, t) {
+                        return Object.prototype.hasOwnProperty.call(e, t);
+                    }),
+                    (l.p = "/");
+                var i = (this.webpackJsonpclient =
+                        this.webpackJsonpclient || []),
+                    f = i.push.bind(i);
+                (i.push = t), (i = i.slice());
+                for (var a = 0; a < i.length; a++) t(i[a]);
+                var c = f;
+                r();
+            })([]);
+        </script>
+        <script src="/static/js/2.887d45e5.chunk.js"></script>
+        <script src="/static/js/main.fc85773c.chunk.js"></script>
+    </body>
 </html>

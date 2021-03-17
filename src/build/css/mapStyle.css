@@ -1,28 +1,37 @@
 body {
     margin: 0;
-  }
-  #map {
+}
+#map {
     height: 100vh;
     width: 100vw;
-  }
-  #instructions {
+}
+#instructions {
     position: absolute;
     margin: 20px;
-    width: 25%;
+    width: 80%;
+    height: 15%;
+    right: 9%;
     top: 0;
     bottom: 20%;
-    top: 10vh;
+    top: 5vh;
     padding: 20px;
-    color: #fff;
-    background-color: rgba(83, 83, 83, 0.863);
+    color: rgba(78, 78, 78, 1);
+    background-color: rgba(255, 255, 255);
+    box-shadow: 0 1px 4px rgba(146, 161, 176, 1);
     overflow-y: scroll;
     font-family: sans-serif;
     font-size: 1.5em;
     line-height: 2em;
     border-radius: 25px;
     display: none;
-  }
-  #loader {
+}
+#instructions::-webkit-scrollbar {
+    display: none;
+}
+#instructions span {
+    text-align: center;
+}
+#loader {
     position: fixed;
     left: 50%;
     top: 50%;
@@ -31,9 +40,32 @@ body {
     z-index: 9999;
     background: url(../loading.gif);
     background-repeat: no-repeat;
-  }
-  .duration {
+}
+.duration {
     font-size: 2em;
-    color: #fff;
+    color: rgba(78, 78, 78, 1);
     font-weight: 700;
-  }
+}
+
+@media only screen and (max-width: 800px) {
+    #instructions {
+        position: absolute;
+        margin: 20px;
+        width: 80%;
+        height: 15%;
+        right: 9%;
+        top: 0;
+        bottom: 20%;
+        top: 10vh;
+        padding: 20px;
+        color: rgba(78, 78, 78, 1);
+        background-color: rgba(255, 255, 255);
+        box-shadow: 0 1px 4px rgba(146, 161, 176, 1);
+        overflow-y: scroll;
+        font-family: sans-serif;
+        font-size: 1.5em;
+        line-height: 2em;
+        border-radius: 25px;
+        display: none;
+    }
+}

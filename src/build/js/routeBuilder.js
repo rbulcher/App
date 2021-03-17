@@ -55,13 +55,12 @@ const displayRoutes = document.getElementById("routes");
       }
 
       
-      function displayCurrentDay(day, dayAbreviation) {
-        console.log(day)
+      async function displayCurrentDay(day, dayAbreviation) {
         displayRoutes.textContent = '';
         const header = document.createElement("h2");
         header.textContent = day + " Route";
         displayRoutes.appendChild(header);
-       fetch(API_URL)
+       await fetch(API_URL)
     .then(response => response.json())
     .then(locations => {
           locations.forEach(location => {

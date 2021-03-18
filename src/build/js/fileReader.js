@@ -1,6 +1,7 @@
 var accessToken =
   "pk.eyJ1IjoicnlhbmJ1bGNoZXIiLCJhIjoiY2tsd2w3OTA3MDBmZzJ1azJrNzU2ZWd1eiJ9.VyczYMv752tJuJd4cjsKhg";
 
+
 const API_URL = "https://www.routeplan.xyz/api/logs";
 
 document.getElementById("input-file").addEventListener("change", getFile);
@@ -141,6 +142,7 @@ document
   .addEventListener("click", function (event) {
     event.preventDefault();
     try {
+
       var sortedAddresses = [];
       var unsortedAddresses = [];
       if (addresses.length > 0) {
@@ -171,6 +173,7 @@ document
   });
 
 function uploadSortedAddressesToDatabase(data) {
+
   for(let i = 0; i < data.length; i++) {
     console.log(data[i])
     fetch(API_URL, {

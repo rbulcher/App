@@ -11,6 +11,15 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+router.get('/findLocation/:id', async (req, res, next) => {
+    try{
+        const entry = await LogEntry.findById(req.params.id);
+        res.json(entry);
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.post('/',async (req,res, next) => {
     try{
         const logEntry = new LogEntry(req.body);

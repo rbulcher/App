@@ -65,16 +65,17 @@ function placeFileContent(target, file) {
         addresses.push(address);
         descriptions.push(description);
         var formatAddress = "";
-        for (var i = 0; i < address.length; i++) {
-          formatAddress += address[i] + "%20";
+        var splitAddress = address.split(" ");
+        for (var i = 0; i < splitAddress.length; i++) {
+          formatAddress += splitAddress[i] + "%20";
         }
         // Above adds an extra %20 to string, this removes it
         var geoJsonAddress = formatAddress.slice(0, -3);
+        geoJsonAddress += "%2C%20Oxford%2C%20Ohio%2045056"
         var url =
           "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
           geoJsonAddress +
-          ".json?proximity=+" +
-          userLocation +
+          ".json?address" +
           "&access_token=" +
           accessToken;
 
@@ -84,9 +85,10 @@ function placeFileContent(target, file) {
           })
           .then(function (jsonResponse) {
             var addressLongitude =
-              jsonResponse.features[0].geometry.coordinates[1];
+              jsonResponse.features[0].center[1];
             var addressLatitude =
-              jsonResponse.features[0].geometry.coordinates[0];
+              jsonResponse.features[0].center[0];
+              console.log(addressLongitude + " " + addressLatitude)
             let longLat = [addressLongitude, addressLatitude];
 
             const div = document.createElement("div");
@@ -188,6 +190,9 @@ function uploadSortedAddressesToDatabase(addresses) {
 }
 
 function sortAddresses(addresses) {
+  
+
+
   return addresses;
 }
 

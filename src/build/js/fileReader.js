@@ -88,7 +88,6 @@ function placeFileContent(target, file) {
               jsonResponse.features[0].center[1];
             var addressLatitude =
               jsonResponse.features[0].center[0];
-              console.log(addressLongitude + " " + addressLatitude)
             let longLat = [addressLongitude, addressLatitude];
 
             const div = document.createElement("div");
@@ -141,8 +140,6 @@ document
   .getElementById("submitData")
   .addEventListener("click", function (event) {
     event.preventDefault();
-
-    //SEND DATA TO DB
     try {
       var sortedAddresses = [];
       var unsortedAddresses = [];
@@ -163,37 +160,70 @@ document
         }
       }
       sortedAddresses = sortAddresses(unsortedAddresses);
+
       uploadSortedAddressesToDatabase(sortedAddresses);
 
       alert("Successfully loaded addresses");
-      location.reload();
+     //location.reload();
     } catch (error) {
-      alert("ERROR: " + error);
+      alert("Error uploading to DB:\n" + error);
     }
   });
 
-function uploadSortedAddressesToDatabase(addresses) {
-  addresses.forEach((message) => {
-    console.log(message)
+function uploadSortedAddressesToDatabase(data) {
+  for(let i = 0; i < data.length; i++) {
+    console.log(data[i])
     fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify(message),
-      headers: {
-        "content-type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((createdMessage) => {
-        console.log(createdMessage);
-      });
-  });
+          method: "POST",
+          body: JSON.stringify(data[i]),
+          headers: {
+            "content-type": "application/json",
+          },
+        })
+  }
 }
 
 function sortAddresses(addresses) {
-  
+  var allDistancesAndAddress = [];
 
+  for(var i = 0; i < addresses.length; i++) {
+    var currentAddress = addresses[i];
+    var lat = currentAddress.location.latitude;
+    var lon = currentAddress.location.longitude;
+    
+    var distanceFromUser = getDistanceFromLatLonInKm(userLocation[0],userLocation[1],lat,lon);
+    allDistancesAndAddress.push({
+      distanceFromUser,
+      currentAddress
+    });
+  }
 
-  return addresses;
+  var sorted = allDistancesAndAddress.sort((a,b) => {
+    return a.distanceFromUser - b.distanceFromUser;
+  })
+
+  var sortedAddressObjects =  [];
+  sorted.forEach((obj) => {
+      sortedAddressObjects.push(obj.currentAddress);
+  })
+  return sortedAddressObjects;
+}
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1);
+  var a =
+  Math.sin(dLat/2) * Math.sin(dLat/2) +
+  Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+  Math.sin(dLon/2) * Math.sin(dLon/2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c; // Distance in km
+  return d;  // distance returned
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
 }
 
 function getDeliveryDateAndType(

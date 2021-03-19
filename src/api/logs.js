@@ -1,38 +1,47 @@
-const { Router } = require('express');
-const LogEntry = require('../modules/logEntry');
+const { Router } = require("express");
+const LogEntry = require("../modules/logEntry");
 const router = Router();
 
-router.get('/', async (req, res, next) => {
-    try{
-        const entries = await LogEntry.find();
-        res.json(entries);
-    } catch (error) {
-        next(error);
-    }
+router.get("/", async (req, res, next) => {
+  try {
+    const entries = await LogEntry.find();
+    res.json(entries);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.get('/findLocation/:id', async (req, res, next) => {
-    try{
-        const entry = await LogEntry.findById(req.params.id);
-        res.json(entry);
-    } catch (error) {
-        next(error);
-    }
+router.get("/findLocation/:id", async (req, res, next) => {
+  try {
+    const entry = await LogEntry.findById(req.params.id);
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.post('/',async (req,res, next) => {
-    try{
-        const logEntry = new LogEntry(req.body);
-        const createdEntry = await logEntry.save();
-        res.json(createdEntry);
+router.get("/findMonday", async (req, res, next) => {
+    try {
+      const entry = await LogEntry.find({deliverDateAndType : { "$regex": "Mon", "$options": "i" } });
+      
+      res.json(entry);
     } catch (error) {
-        if(error.name === 'ValidationError'){
-            res.status(422);
-        }
-        next(error);
+      next(error);
     }
-    
+  });
 
-})
+
+router.post("/", async (req, res, next) => {
+  try {
+    const logEntry = new LogEntry(req.body);
+    const createdEntry = await logEntry.save();
+    res.json(createdEntry);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      res.status(422);
+    }
+    next(error);
+  }
+});
 
 module.exports = router;

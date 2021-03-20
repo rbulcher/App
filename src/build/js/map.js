@@ -109,7 +109,7 @@ function getRoute(end) {
       });
     }
     var instructions = document.getElementById('instructions');
-var steps = data.legs[0].steps;
+    var steps = data.legs[0].steps;
 
 var tripInstructions = [];
 if(steps.length !== 0 && data.duration !== 0) {
@@ -157,50 +157,132 @@ map.on('load', function () {
 
 
 
-map.on('click', function(e) {
-  var coordsObj = e.lngLat;
-  canvas.style.cursor = '';
-  var coords = Object.keys(coordsObj).map(function(key) {
-    return coordsObj[key];
-  });
-  var end = {
-    type: 'FeatureCollection',
-    features: [{
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'Point',
-        coordinates: coords
-      }
-    }
-    ]
-  };
-  if (map.getLayer('end')) {
-    map.getSource('end').setData(end);
-  } else {
-    map.addLayer({
-      id: 'end',
-      type: 'circle',
-      source: {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [{
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'Point',
-              coordinates: coords
-            }
-          }]
+// map.on('click', function(e) {
+//   var coordsObj = e.lngLat;
+//   canvas.style.cursor = '';
+//   var coords = Object.keys(coordsObj).map(function(key) {
+//     return coordsObj[key];
+//   });
+//   var end = {
+//     type: 'FeatureCollection',
+//     features: [{
+//       type: 'Feature',
+//       properties: {},
+//       geometry: {
+//         type: 'Point',
+//         coordinates: coords
+//       }
+//     }
+//     ]
+//   };
+//   if (map.getLayer('end')) {
+//     map.getSource('end').setData(end);
+//   } else {
+//     map.addLayer({
+//       id: 'end',
+//       type: 'circle',
+//       source: {
+//         type: 'geojson',
+//         data: {
+//           type: 'FeatureCollection',
+//           features: [{
+//             type: 'Feature',
+//             properties: {},
+//             geometry: {
+//               type: 'Point',
+//               coordinates: coords
+//             }
+//           }]
+//         }
+//       },
+//       paint: {
+//         'circle-radius': 10,
+//         'circle-color': '#f30'
+//       }
+//     });
+//   }
+//   getRoute(coords);
+// });
+ });
+
+
+
+ function mondayRouteBuild() {
+  const API_URL_MONDAY = "https://www.routeplan.xyz/api/logs/findMonday";
+  const locations = getLocations(API_URL_MONDAY);
+
+  var addresses = [];
+  locations.then(data => addresses = data).then( () => {
+    console.log(addresses)
+
+    var sortedAddresses = sortAddresses(addresses);
+
+    var locationIndex = 0;
+
+      document.getElementById('continue-button').onclick = () => {
+        if(locationIndex >= sortedAddresses.length){
+          alert("Finished Route");
+        }else {
+       var latitude = sortedAddresses[locationIndex].location.latitude;
+       var longitude = sortedAddresses[locationIndex].location.longitude;
+
+        var latLong =[latitude, longitude];
+       
+        getRoute(latLong);
+       locationIndex++;
         }
-      },
-      paint: {
-        'circle-radius': 10,
-        'circle-color': '#f30'
-      }
+    }
+
+
+
+  });
+
+  async function getLocations(API_URL) {
+    var response = await fetch(API_URL);
+    return response.json();
+  }
+}
+
+function sortAddresses(addresses) {
+  var allDistancesAndAddress = [];
+
+  for(var i = 0; i < addresses.length; i++) {
+    var currentAddress = addresses[i];
+    var lat = currentAddress.location.latitude;
+    var lon = currentAddress.location.longitude;
+    
+    var distanceFromUser = getDistanceFromLatLonInKm(userLocation[0],userLocation[1],lat,lon);
+    allDistancesAndAddress.push({
+      distanceFromUser,
+      currentAddress
     });
   }
-  getRoute(coords);
-});
-});
+
+  var sorted = allDistancesAndAddress.sort((a,b) => {
+    return a.distanceFromUser - b.distanceFromUser;
+  })
+
+  var sortedAddressObjects =  [];
+  sorted.forEach((obj) => {
+      sortedAddressObjects.push(obj.currentAddress);
+  })
+  return sortedAddressObjects;
+}
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1);
+  var a =
+  Math.sin(dLat/2) * Math.sin(dLat/2) +
+  Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+  Math.sin(dLon/2) * Math.sin(dLon/2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c; // Distance in km
+  return d;  // distance returned
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+

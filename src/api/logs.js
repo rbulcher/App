@@ -44,4 +44,16 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.get("/updateRoute/:address", async (req, res) => {
+  try {
+    const entry = await LogEntry.find({address : req.params.address});
+    
+    entry[0].address = "506 WHITE OAK DR"
+
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = router;

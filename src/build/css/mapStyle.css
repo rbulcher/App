@@ -2,7 +2,7 @@ body {
     margin: 0;
 }
 #map {
-    height: 100vh;
+    height: 80vh;
     width: 100vw;
 }
 #instructions {

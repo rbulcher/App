@@ -45,7 +45,7 @@
                       children: [
                         Object(j.jsx)(d.a.Item, {
                           href: "#monday",
-                          onClick: routeMonday,
+                          onClick: mondayRouteBuild,
                           children: "Monday",
                         }),
                         Object(j.jsx)(d.a.Item, {

@@ -22,7 +22,6 @@ mongoose.connect(process.env.DATABASE_URL, {
 });
 
 app.use("/api/logs", logs);
-app.use("/api/logs/findLocation", logs);
 
 app.use(express.static(path.join(__dirname, "build")));
 

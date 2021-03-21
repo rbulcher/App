@@ -44,38 +44,31 @@
                       id: "basic-nav-dropdown",
                       children: [
                         Object(j.jsx)(d.a.Item, {
-                          href: "#monday",
-                          onClick: mondayRouteBuild,
+                          onClick: () => routeBuild("Monday"),
                           children: "Monday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          href: "#tuesday",
-                          onClick: routeTuesday,
+                          onClick: () => routeBuild("Tuesday"),
                           children: "Tuesday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          href: "#wednesday",
-                          onClick: routeWednesday,
+                          onClick: () => routeBuild("Wednesday"),
                           children: "Wednesday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          href: "#thursday",
-                          onClick: routeThursday,
+                          onClick: () => routeBuild("Thursday"),
                           children: "Thursday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          href: "#friday",
-                          onClick: routeFriday,
+                          onClick: () => routeBuild("Friday"),
                           children: "Friday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          href: "#saturday",
-                          onClick: routeSaturday,
+                          onClick: () => routeBuild("Saturday"),
                           children: "Saturday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          href: "#sunday",
-                          onClick: routeSunday,
+                          onClick: () => routeBuild("Sunday"),
                           children: "Sunday",
                         }),
                       ],

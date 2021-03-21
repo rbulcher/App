@@ -50,18 +50,19 @@ function placeFileContent(target, file) {
   readFileContent(file)
     .then((content) => {
       var lines = content.split("\n");
-
+      lines.shift(); //remove title
+      lines.shift(); //removes example
       lines.forEach((line) => {
         var splitLine = line.split(",");
         var address = splitLine[0];
-        var description = splitLine[9];
-        var monday = splitLine[2];
-        var tuesday = splitLine[3];
-        var wednesday = splitLine[4];
-        var thursday = splitLine[5];
-        var friday = splitLine[6];
-        var saturday = splitLine[7];
-        var sunday = splitLine[8];
+        var description = splitLine[8];
+        var monday = splitLine[1];
+        var tuesday = splitLine[2];
+        var wednesday = splitLine[3];
+        var thursday = splitLine[4];
+        var friday = splitLine[5];
+        var saturday = splitLine[6];
+        var sunday = splitLine[7];
 
         addresses.push(address);
         descriptions.push(description);

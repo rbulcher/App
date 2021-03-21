@@ -14,6 +14,7 @@
             rel="stylesheet"
             href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
         />
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <title>Route Planner</title>
         <!-- ===== PAGE ICON ===== -->
         <link
@@ -31,7 +32,7 @@
         <div id="loader"></div>
         <div id="map" style="margin-top: 5vh"></div>
         <div id="instructions"></div>
-        <div id="nextRouteButton">
+        <div id="nextRouteButton" style="display:none;">
             <input class="btn btn-primary btn-lg btn-block " type="button" id="continue-button" value="Start Route"/>
         </div>
         

@@ -2,9 +2,10 @@ body {
     margin: 0;
 }
 #map {
-    height: 90vh;
+    height: 95vh;
     width: 100vw;
 }
+
 #instructions {
     position: absolute;
     margin: 20px;

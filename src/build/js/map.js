@@ -2,7 +2,9 @@ mapboxgl.accessToken =
   "pk.eyJ1IjoicnlhbmJ1bGNoZXIiLCJhIjoiY2tsd2w3OTA3MDBmZzJ1azJrNzU2ZWd1eiJ9.VyczYMv752tJuJd4cjsKhg";
 var loader = document.getElementById("loader");
 var mapDiv = document.getElementById("map");
+
 mapDiv.style.opacity = 0.25;
+
 navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
   enableHighAccuracy: true,
 });
@@ -166,58 +168,17 @@ map.on("load", function () {
       "circle-radius": 0,
     },
   });
-
-  // map.on('click', function(e) {
-  //   var coordsObj = e.lngLat;
-  //   canvas.style.cursor = '';
-  //   var coords = Object.keys(coordsObj).map(function(key) {
-  //     return coordsObj[key];
-  //   });
-  //   var end = {
-  //     type: 'FeatureCollection',
-  //     features: [{
-  //       type: 'Feature',
-  //       properties: {},
-  //       geometry: {
-  //         type: 'Point',
-  //         coordinates: coords
-  //       }
-  //     }
-  //     ]
-  //   };
-  //   if (map.getLayer('end')) {
-  //     map.getSource('end').setData(end);
-  //   } else {
-  //     map.addLayer({
-  //       id: 'end',
-  //       type: 'circle',
-  //       source: {
-  //         type: 'geojson',
-  //         data: {
-  //           type: 'FeatureCollection',
-  //           features: [{
-  //             type: 'Feature',
-  //             properties: {},
-  //             geometry: {
-  //               type: 'Point',
-  //               coordinates: coords
-  //             }
-  //           }]
-  //         }
-  //       },
-  //       paint: {
-  //         'circle-radius': 10,
-  //         'circle-color': '#f30'
-  //       }
-  //     });
-  //   }
-  //   getRoute(coords);
-  // });
 });
 
+function updateSuccess(position) {
+  userLocation = [position.coords.longitude, position.coords.latitude];
+}
+
 function routeBuild(day) {
+  mapDiv.style.height = "90vh";
+  document.getElementById("nextRouteButton").style.display = "";
   const API_URL_MONDAY = "https://www.routeplan.xyz/api/logs/find" + day;
-  console.log(API_URL_MONDAY);
+
   const locations = getLocations(API_URL_MONDAY);
 
   var addresses = [];
@@ -226,21 +187,27 @@ function routeBuild(day) {
     .then(() => {
       var sortedAddresses = sortAddresses(addresses);
 
-      var locationIndex = 0;
-
       document.getElementById("continue-button").onclick = () => {
+        //get updated user location
+        navigator.geolocation.getCurrentPosition(updateSuccess, errorLocation, {
+          enableHighAccuracy: true,
+        });
+        
         document.getElementById("continue-button").value =
           day + ": Next Location";
-        if (locationIndex >= sortedAddresses.length) {
+        if (sortedAddresses.length <= 0) {
           alert("Finished Route");
+          location.reload();
         } else {
-          var latitude = sortedAddresses[locationIndex].location.latitude;
-          var longitude = sortedAddresses[locationIndex].location.longitude;
+          var latitude = sortedAddresses[0].location.latitude;
+          var longitude = sortedAddresses[0].location.longitude;
 
           var latLong = [latitude, longitude];
 
           getRoute(latLong);
-          locationIndex++;
+          sortedAddresses.shift();
+          sortedAddresses = sortAddresses(sortedAddresses);
+          console.log(sortedAddresses)
         }
       };
     });

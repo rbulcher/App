@@ -31,10 +31,13 @@
         <div id="root"></div>
         <div id="loader"></div>
         <div id="map" style="margin-top: 5vh"></div>
-        <div id="instructions"></div>
-        <div id="nextRouteButton" style="display:none;">
-            <input class="btn btn-primary btn-lg btn-block " type="button" id="continue-button" value="Start Route"/>
-        </div>
+        <div id="map-overlay-container">
+            <div class="map-overlay">
+              <h2 id="title">Current Route</h2>
+              <ul id="addresses"></ul>
+              <button class="btn btn-primary btn-lg" onclick="finishRoute()" id="finished-route-button">Finish Route</button>
+            </div>
+          </div>
         
         <script src="js/map.js"></script>
         <script src="js/routeBuilder.js"></script>

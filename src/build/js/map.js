@@ -2,7 +2,8 @@ mapboxgl.accessToken =
   "pk.eyJ1IjoicnlhbmJ1bGNoZXIiLCJhIjoiY2tsd2w3OTA3MDBmZzJ1azJrNzU2ZWd1eiJ9.VyczYMv752tJuJd4cjsKhg";
 var loader = document.getElementById("loader");
 var mapDiv = document.getElementById("map");
-
+var instructions = document.getElementById("map-overlay-container");
+instructions.style.display = "none";
 mapDiv.style.opacity = 0.25;
 
 navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
@@ -13,6 +14,10 @@ var userLocation = [-84.74232, 39.51019];
 function successLocation(position) {
   userLocation = [position.coords.longitude, position.coords.latitude];
   setupMap();
+}
+
+function finishRoute() {
+  location.reload();
 }
 
 function errorLocation() {
@@ -29,8 +34,6 @@ const map = new mapboxgl.Map({
   zoom: 8,
   center: userLocation,
 });
-
-var canvas = map.getCanvasContainer();
 
 function setupMap() {
   mapDiv.style.opacity = 1;
@@ -118,54 +121,88 @@ function getRoute(end) {
         },
       });
     }
-    var instructions = document.getElementById("instructions");
-    var steps = data.legs[0].steps;
-
-    var tripInstructions = [];
-    if (steps.length !== 0 && data.duration !== 0) {
-      instructions.style.display = "block";
-    }
-
-    for (var i = 0; i < steps.length; i++) {
-      tripInstructions.push("<br><li>" + steps[i].maneuver.instruction) +
-        "</li>";
-      instructions.innerHTML =
-        '<span class="duration">Trip duration: ' +
-        Math.floor(data.duration / 60) +
-        " min  </span>" +
-        tripInstructions;
-    }
   };
   req.send();
 }
 
 map.on("load", function () {
-  // make an initial directions request that
-  // starts and ends at the same location
-  getRoute(userLocation);
+  map.addSource("route", {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [],
+    },
+  });
 
-  // Add destination to the map
-  map.addLayer({
-    id: "point",
-    type: "circle",
-    source: {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: userLocation,
-            },
-          },
-        ],
+  map.addLayer(
+    {
+      id: "routeLayer",
+      type: "line",
+      source: "route",
+      layout: {},
+      paint: {
+        "line-color": "cornflowerblue",
+        "line-width": 10,
       },
     },
+    "road-label"
+  );
+
+  map.addLayer(
+    {
+      id: "routeArrows",
+      source: "route",
+      type: "symbol",
+      layout: {
+        "symbol-placement": "line",
+        "text-field": "→",
+        "text-rotate": 0,
+        "text-keep-upright": false,
+        "symbol-spacing": 30,
+        "text-size": 22,
+        "text-offset": [0, -0.1],
+      },
+      paint: {
+        "text-color": "white",
+        "text-halo-color": "white",
+        "text-halo-width": 1,
+      },
+    },
+    "road-label"
+  );
+
+  map.addSource("deliveries", {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [],
+    },
+  });
+
+  map.addLayer(
+    {
+      id: "deliveriesLayer",
+      type: "circle",
+      source: "deliveries",
+      layout: {},
+      paint: {
+        "circle-color": "white",
+        "circle-stroke-color": "#444",
+        "circle-radius": 18,
+      },
+    },
+    "road-label"
+  );
+
+  map.addLayer({
+    id: "deliveriesLabels",
+    type: "symbol",
+    source: "deliveries",
+    layout: {
+      "text-field": ["get", "stop_number"],
+    },
     paint: {
-      "circle-radius": 0,
+      "text-color": "#444",
     },
   });
 });
@@ -174,9 +211,21 @@ function updateSuccess(position) {
   userLocation = [position.coords.longitude, position.coords.latitude];
 }
 
+function updateUserLocation() {
+  navigator.geolocation.getCurrentPosition(updateSuccess, errorLocation, {
+    enableHighAccuracy: true,
+  });
+}
+
 function routeBuild(day) {
-  mapDiv.style.height = "90vh";
-  document.getElementById("nextRouteButton").style.display = "";
+  instructions.style.display = "";
+  updateUserLocation();
+  map.flyTo({
+    center: userLocation,
+    zoom: 17,
+  });
+  //mapDiv.style.height = "90vh";
+  //document.getElementById("nextRouteButton").style.display = "";
   const API_URL_MONDAY = "https://www.routeplan.xyz/api/logs/find" + day;
 
   const locations = getLocations(API_URL_MONDAY);
@@ -185,31 +234,48 @@ function routeBuild(day) {
   locations
     .then((data) => (addresses = data))
     .then(() => {
-      var sortedAddresses = sortAddresses(addresses);
+      updateUserLocation();
+      const coords = [];
 
-      document.getElementById("continue-button").onclick = () => {
-        //get updated user location
-        navigator.geolocation.getCurrentPosition(updateSuccess, errorLocation, {
-          enableHighAccuracy: true,
+      addresses.unshift({
+        address: "Start Point",
+        location: {
+          longitude: userLocation[1],
+          latitude: userLocation[0],
+        },
+      });
+
+      addresses.forEach((address) => {
+        coords.push(address.location);
+      });
+
+      const approachParam = ";curb";
+      let optimizeUrl = "https://api.mapbox.com/optimized-trips/v1/";
+      optimizeUrl += "mapbox/driving-traffic/";
+      coords.forEach((coord) => {
+        optimizeUrl += coord.latitude + "," + coord.longitude + ";";
+      });
+      optimizeUrl = optimizeUrl.slice(0, -1);
+      optimizeUrl += "?access_token=" + mapboxgl.accessToken;
+      optimizeUrl += "&geometries=geojson&&overview=full&steps=true";
+      optimizeUrl += "&approaches=" + approachParam.repeat(coords.length - 1);
+      // To inspect the response in the browser, remove for production
+
+      fetch(optimizeUrl)
+        .then((res) => res.json())
+        .then((res) => {
+          res.waypoints.forEach((waypoint, i) => {
+            waypoint.address =
+              waypoint[i] == 0 ? "Start" : addresses[i].address;
+          });
+
+          // Add the distance, duration, and turn-by-turn instructions to the sidebar
+          setOverview(res);
+
+          // Draw the route anps on the map
+          setTripLine(res.trips[0]);
+          setStops(res.waypoints);
         });
-        
-        document.getElementById("continue-button").value =
-          day + ": Next Location";
-        if (sortedAddresses.length <= 0) {
-          alert("Finished Route");
-          location.reload();
-        } else {
-          var latitude = sortedAddresses[0].location.latitude;
-          var longitude = sortedAddresses[0].location.longitude;
-
-          var latLong = [latitude, longitude];
-
-          getRoute(latLong);
-          sortedAddresses.shift();
-          sortedAddresses = sortAddresses(sortedAddresses);
-          console.log(sortedAddresses)
-        }
-      };
     });
 
   async function getLocations(API_URL) {
@@ -218,52 +284,73 @@ function routeBuild(day) {
   }
 }
 
-function sortAddresses(addresses) {
-  var allDistancesAndAddress = [];
+const titleText = document.getElementById("title");
+const addressList = document.getElementById("addresses");
 
-  for (var i = 0; i < addresses.length; i++) {
-    var currentAddress = addresses[i];
-    var lat = currentAddress.location.latitude;
-    var lon = currentAddress.location.longitude;
+const setOverview = function (route) {
+  const trip = route.trips[0];
+  const waypoints = route.waypoints;
+  // Set some basic stats for the route in the sidebar
+  titleText.innerText = `${(trip.distance / 1609.344).toFixed(1)} miles | ${(
+    trip.duration / 60
+  ).toFixed(0)} minutes`;
+  addressList.innerText = "";
 
-    var distanceFromUser = getDistanceFromLatLonInKm(
-      userLocation[0],
-      userLocation[1],
-      lat,
-      lon
-    );
-    allDistancesAndAddress.push({
-      distanceFromUser,
-      currentAddress,
+  // Add the delivery addresses and turn-by-turn instructions to the sidebar for each leg of the trip
+  trip.legs.forEach((leg, i) => {
+    const listItem = document.createElement("li");
+    // We want the destination address when we depart, hence index + 1
+    if (i < trip.legs.length - 1) {
+      const nextDelivery = waypoints.find(
+        ({ waypoint_index }) => waypoint_index === i + 1
+      );
+
+      listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address}</b>`;
+    } else {
+      // We're outside the range of deliveries, so let's go home
+      listItem.innerHTML = `<b>Return to Start Location</b>`;
+    }
+    addressList.appendChild(listItem);
+    // add the TBT instructions for this leg
+    leg.steps.forEach((step) => {
+      const listItem = document.createElement("li");
+      listItem.innerText = step.maneuver.instruction;
+      addressList.appendChild(listItem);
     });
-  }
-
-  var sorted = allDistancesAndAddress.sort((a, b) => {
-    return a.distanceFromUser - b.distanceFromUser;
   });
+};
 
-  var sortedAddressObjects = [];
-  sorted.forEach((obj) => {
-    sortedAddressObjects.push(obj.currentAddress);
+const setTripLine = function (trip) {
+  const routeLine = {
+    type: "FeatureCollection",
+    features: [
+      {
+        properties: {},
+        geometry: trip.geometry,
+      },
+    ],
+  };
+  map.getSource("route").setData(routeLine);
+};
+
+const setStops = function (stops) {
+  const deliveries = {
+    type: "FeatureCollection",
+    features: [],
+  };
+
+  stops.forEach((stop) => {
+    const delivery = {
+      properties: {
+        name: stop.name,
+        stop_number: stop.waypoint_index,
+      },
+      geometry: {
+        type: "Point",
+        coordinates: stop.location,
+      },
+    };
+    deliveries.features.push(delivery);
   });
-  return sortedAddressObjects;
-}
-
-function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-  var R = 6371; // Radius of the earth in km
-  var dLat = deg2rad(lat2 - lat1); // deg2rad below
-  var dLon = deg2rad(lon2 - lon1);
-  var a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) *
-      Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c; // Distance in km
-  return d; // distance returned
-}
-
-function deg2rad(deg) {
-  return deg * (Math.PI / 180);
-}
+  map.getSource("deliveries").setData(deliveries);
+};

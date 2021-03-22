@@ -167,7 +167,7 @@ document
       uploadSortedAddressesToDatabase(sortedAddresses);
 
       alert("Successfully loaded addresses");
-     //location.reload();
+     location.reload();
     } catch (error) {
       alert("Error uploading to DB:\n" + error);
     }

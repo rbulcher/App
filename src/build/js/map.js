@@ -186,9 +186,9 @@ map.on("load", function () {
       source: "deliveries",
       layout: {},
       paint: {
-        "circle-color": "white",
+        "circle-color": "#444",
         "circle-stroke-color": "#444",
-        "circle-radius": 18,
+        "circle-radius": 12,
       },
     },
     "road-label"
@@ -202,7 +202,7 @@ map.on("load", function () {
       "text-field": ["get", "stop_number"],
     },
     paint: {
-      "text-color": "#444",
+      "text-color": "white",
     },
   });
 });

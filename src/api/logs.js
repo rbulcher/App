@@ -98,13 +98,15 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/updateRoute/:address", async (req, res) => {
+router.post("/updateEntry/:id", async (req, res, next) => {
   try {
-    const entry = await LogEntry.find({address : req.params.address});
-    
-    entry[0].address = "506 WHITE OAK DR"
+    LogEntry.findOneAndUpdate({_id : req.params.id},{ $set: { address: req.body.address ,
+      deliverDateAndType : req.body.deliveryDateAndType,
+      description : req.body.description
+     },}, {new : true}, (error) => {
+      console.log(error);
+    })
 
-    res.json(entry);
   } catch (error) {
     next(error);
   }

@@ -21,69 +21,82 @@ router.get("/findLocation/:id", async (req, res, next) => {
 });
 
 router.get("/findMonday", async (req, res, next) => {
-    try {
-      const entry = await LogEntry.find({deliverDateAndType : { "$regex": "Mon", "$options": "i" } });
-      
-      res.json(entry);
-    } catch (error) {
-      next(error);
-    }
-  });
-  router.get("/findTuesday", async (req, res, next) => {
-    try {
-      const entry = await LogEntry.find({deliverDateAndType : { "$regex": "Tue", "$options": "i" } });
-      
-      res.json(entry);
-    } catch (error) {
-      next(error);
-    }
-  });
-  router.get("/findWednesday", async (req, res, next) => {
-    try {
-      const entry = await LogEntry.find({deliverDateAndType : { "$regex": "Wed", "$options": "i" } });
-      
-      res.json(entry);
-    } catch (error) {
-      next(error);
-    }
-  });
-  router.get("/findThursday", async (req, res, next) => {
-    try {
-      const entry = await LogEntry.find({deliverDateAndType : { "$regex": "Thur", "$options": "i" } });
-      
-      res.json(entry);
-    } catch (error) {
-      next(error);
-    }
-  });
-  router.get("/findFriday", async (req, res, next) => {
-    try {
-      const entry = await LogEntry.find({deliverDateAndType : { "$regex": "Fri", "$options": "i" } });
-      
-      res.json(entry);
-    } catch (error) {
-      next(error);
-    }
-  });
-  router.get("/findSaturday", async (req, res, next) => {
-    try {
-      const entry = await LogEntry.find({deliverDateAndType : { "$regex": "Sat", "$options": "i" } });
-      
-      res.json(entry);
-    } catch (error) {
-      next(error);
-    }
-  });
-  router.get("/findSunday", async (req, res, next) => {
-    try {
-      const entry = await LogEntry.find({deliverDateAndType : { "$regex": "Sun", "$options": "i" } });
-      
-      res.json(entry);
-    } catch (error) {
-      next(error);
-    }
-  });
+  try {
+    const entry = await LogEntry.find({
+      deliverDateAndType: { $regex: "Mon", $options: "i" },
+    });
 
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/findTuesday", async (req, res, next) => {
+  try {
+    const entry = await LogEntry.find({
+      deliverDateAndType: { $regex: "Tue", $options: "i" },
+    });
+
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/findWednesday", async (req, res, next) => {
+  try {
+    const entry = await LogEntry.find({
+      deliverDateAndType: { $regex: "Wed", $options: "i" },
+    });
+
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/findThursday", async (req, res, next) => {
+  try {
+    const entry = await LogEntry.find({
+      deliverDateAndType: { $regex: "Thur", $options: "i" },
+    });
+
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/findFriday", async (req, res, next) => {
+  try {
+    const entry = await LogEntry.find({
+      deliverDateAndType: { $regex: "Fri", $options: "i" },
+    });
+
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/findSaturday", async (req, res, next) => {
+  try {
+    const entry = await LogEntry.find({
+      deliverDateAndType: { $regex: "Sat", $options: "i" },
+    });
+
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/findSunday", async (req, res, next) => {
+  try {
+    const entry = await LogEntry.find({
+      deliverDateAndType: { $regex: "Sun", $options: "i" },
+    });
+
+    res.json(entry);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post("/", async (req, res, next) => {
   try {
@@ -100,16 +113,23 @@ router.post("/", async (req, res, next) => {
 
 router.post("/updateEntry/:id", async (req, res, next) => {
   try {
-    LogEntry.findOneAndUpdate({_id : req.params.id},{ $set: { address: req.body.address ,
-      deliverDateAndType : req.body.deliveryDateAndType,
-      description : req.body.description
-     },}, {new : true}, (error) => {
-      console.log(error);
-    })
-
+    LogEntry.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        $set: {
+          address: req.body.address,
+          deliverDateAndType: req.body.deliveryDateAndType,
+          description: req.body.description,
+        },
+      },
+      { new: true },
+      (error) => {
+        console.log(error);
+      }
+    );
   } catch (error) {
     next(error);
   }
-})
+});
 
 module.exports = router;

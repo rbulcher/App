@@ -89,8 +89,9 @@ function deleteEntry(id, address) {
   const confirmDelete = confirm("Delete Address: " + address) 
   if(confirmDelete) {
     try {
-      fetch(API_DELETE_ONE);
+    fetch(API_DELETE_ONE);
     alert("Successfully Deleted");
+    document.getElementById(id).remove();
     } catch (error) {
       alert("ERROR: " + error);
     }

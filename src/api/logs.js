@@ -23,6 +23,15 @@ router.get("/deleteAllRoutes", async (req, res, next) => {
   }
 });
 
+router.get("/deleteOne/:id", async (req, res, next) => {
+  try {
+    const entry = await LogEntry.findById(req.params.id);
+    entry.remove();
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/findLocation/:id", async (req, res, next) => {
   try {
     const entry = await LogEntry.findById(req.params.id);

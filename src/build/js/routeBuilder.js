@@ -42,13 +42,22 @@ function displayDayRoute(day, dayAbreviation) {
         deliverDateAndType.id = location._id + "deliverDateAndType";
         const descriptionVal = document.createElement("p");
         descriptionVal.id = location._id + "descriptionVal";
+
         const editButton = document.createElement("BUTTON");
         editButton.id = location._id + "editButton";
         editButton.textContent = "EDIT";
-        editButton.className = "btn btn-primary";
+        editButton.className = "btn btn-sm btn-primary";
         editButton.addEventListener("click", () =>
           editEntry(location._id, day, dayAbreviation)
         );
+        const deleteButton = document.createElement("BUTTON");
+        deleteButton.id = location._id + "deleteButton";
+        deleteButton.textContent = "DELETE";
+        deleteButton.className = "btn btn-sm btn-danger";
+        deleteButton.addEventListener("click", () =>
+          deleteEntry(location._id, location.address)
+        );
+
         header.textContent = location.address;
 
         deliverDateAndType.textContent = location.deliverDateAndType;
@@ -68,10 +77,25 @@ function displayDayRoute(day, dayAbreviation) {
         div.appendChild(deliverDateAndType);
         div.appendChild(descriptionVal);
         div.appendChild(editButton);
+        div.appendChild(deleteButton)
         displayRoutes.appendChild(div);
       }
     });
   });
+}
+
+function deleteEntry(id, address) {
+  const API_DELETE_ONE = "https://www.routeplan.xyz/api/logs/deleteOne/" + id;
+  const confirmDelete = confirm("Delete Address: " + address) 
+  if(confirmDelete) {
+    try {
+      fetch(API_DELETE_ONE);
+    alert("Successfully Deleted");
+    } catch (error) {
+      alert("ERROR: " + error);
+    }
+    
+  }
 }
 
 function editEntry(id, day, dayAbreviation) {
@@ -81,11 +105,13 @@ function editEntry(id, day, dayAbreviation) {
   const deliverDateAndType = document.getElementById(id + "deliverDateAndType");
   const descriptionVal = document.getElementById(id + "descriptionVal");
   const editButton = document.getElementById(id + "editButton");
+  const deleteButton = document.getElementById(id + "deleteButton");
   editButton.style.display = "none";
+  deleteButton.style.display = "none";
 
   const submitChangeButton = document.createElement("BUTTON");
   submitChangeButton.textContent = "SUBMIT";
-  submitChangeButton.className = "btn btn-primary";
+  submitChangeButton.className = "btn btn-sm btn-primary";
   submitChangeButton.addEventListener("click", () => {
     //send data changes to DB
     if (headerEdit.value == "") {
@@ -134,7 +160,7 @@ function editEntry(id, day, dayAbreviation) {
   });
   const cancelChangeButton = document.createElement("BUTTON");
   cancelChangeButton.textContent = "CANCEL";
-  cancelChangeButton.className = "btn btn-danger";
+  cancelChangeButton.className = "btn btn-sm btn-danger";
 
   cancelChangeButton.addEventListener("click", () => {
     headerEdit.remove();
@@ -143,6 +169,7 @@ function editEntry(id, day, dayAbreviation) {
     submitChangeButton.remove();
     cancelChangeButton.remove();
     editButton.style.display = "";
+    deleteButton.style.display = "";
   });
 
   const headerEdit = document.createElement("INPUT");

@@ -7,6 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
+    <script src="js/routeBuilder.js"></script>
 
     <!-- Bootstrap CSS -->
     <link
@@ -16,7 +17,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="css/fileUpload.css" />
-    <title>Upload CSV file</title>
+    <title>Delete All Addresses</title>
     <nav
       class="navbar navbar-expand-lg navbar-dark fixed-top"
       style="background-color: rgb(69, 69, 69)"
@@ -57,8 +58,8 @@
               More
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="/deleteAddresses.html">Delete Addresses</a>
-              <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/uploadFile.html">Upload Addresses</a>
+                
               <a
                 class="dropdown-item"
                 target="__blank"
@@ -72,20 +73,18 @@
     </nav>
   </head>
   <body>
-    <div style="width: 40%; margin: 0 auto; padding-top: 6vh;">
-      <form>
-        <p>Address File:</p>
-        <input type="file" id="input-file" name="file" />
-        <div class="mt-3">
-          <button type="submit" class="btn btn-primary" id="submitData">
-            Submit
-          </button>
-          <button class="btn btn-secondary"><a href="assets/template.csv" style="color:white;"download="template.csv">Download Template</a>
-          </button>
+    <div style="display: flex; text-align: center; justify-content: center; align-items: center; height: 200px;">
+        <div class="">
+            <div>
+                <button type="button" onclick="deleteRoutes()" class="btn btn-lg btn-danger">Delete All Addresses</button>
+            </div>
+
+            <div class="staff-name">
+                <div class="dayLabel">
+                (This Cannot be Undone)
+                </div>
+            </div>
         </div>
-      </form>
-    </div>
-    <div id="entries"></div>
     <!-- Optional JavaScript -->
     <script src="js/fileReader.js"></script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

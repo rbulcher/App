@@ -11,6 +11,18 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/deleteAllRoutes", async (req, res, next) => {
+  try {
+    const entries = await LogEntry.find();
+    entries.forEach(entry => {
+      entry.remove();
+    })
+    res.json(entries);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/findLocation/:id", async (req, res, next) => {
   try {
     const entry = await LogEntry.findById(req.params.id);

@@ -184,3 +184,17 @@ function routeSaturday() {
 function routeSunday() {
   displayDayRoute("Sunday", "Sun");
 }
+
+function deleteRoutes() {
+
+  var confirmDelete = confirm("Are you sure you want to delete every address?") 
+  if(confirmDelete) { 
+    try {
+      fetch("https://www.routeplan.xyz/api/logs/deleteAllRoutes")
+      alert("Successfully deleted all address entries!")
+    } catch (error) {
+      alert("ERROR: " + error)
+    }
+    
+  } 
+}

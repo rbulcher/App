@@ -82,8 +82,8 @@
                           children: "View All Routes",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          href: "#",
-                          children: "Edit Addresses",
+                          href: "/deleteAddresses.html",
+                          children: "Delete All Addresses",
                         }),
                         Object(j.jsx)(d.a.Divider, {}),
                         Object(j.jsx)(d.a.Item, {

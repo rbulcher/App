@@ -279,7 +279,7 @@ function routeBuild(day, currentRoute,currentSortedAddresses) {
             latitude: userLocation[0],
           },
         });
-        section = sortAddresses(section);
+        
         seperatedSections.push(section);
       }
 

@@ -10,6 +10,7 @@ navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
   enableHighAccuracy: true,
 });
 var userLocation = [-84.74232, 39.51019];
+var userStartLocation = [-84.74232, 39.51019];
 
 function successLocation(position) {
   userLocation = [position.coords.longitude, position.coords.latitude];
@@ -224,14 +225,25 @@ function updateSuccess(position) {
   userLocation = [position.coords.longitude, position.coords.latitude];
 }
 
+function setStartLocation(position) {
+  userStartLocation = [position.coords.longitude, position.coords.latitude];
+}
+
 function updateUserLocation() {
   navigator.geolocation.getCurrentPosition(updateSuccess, errorLocation, {
     enableHighAccuracy: true,
   });
 }
 
+function getStartLocation() {
+  navigator.geolocation.getCurrentPosition(setStartLocation, errorLocation, {
+    enableHighAccuracy: true,
+  });
+}
 
-function routeBuild(day, currentRoute,currentSortedAddresses) {
+
+
+function routeBuild(day, currentRoute) {
   instructions.style.display = "";
   updateUserLocation();
   // map.flyTo({
@@ -242,29 +254,24 @@ function routeBuild(day, currentRoute,currentSortedAddresses) {
   //document.getElementById("nextRouteButton").style.display = "";
   const API_URL_MONDAY = "https://www.routeplan.xyz/api/logs/find" + day;
 
-  
   const locations = getLocations(API_URL_MONDAY);
-
 
   var addresses = [];
   locations
     .then((data) => (addresses = data))
     .then(() => {
-      updateUserLocation();
+      getStartLocation();
       const coords = [];
 
       addresses.unshift({
         address: "Start Point",
         location: {
-          longitude: userLocation[1],
-          latitude: userLocation[0],
+          longitude: userStartLocation[1],
+          latitude: userStartLocation[0],
         },
       });
 
-      
       var sortedAddresses = sortAddresses(addresses);
-      
-    
 
       var seperatedSections = [];
 
@@ -298,11 +305,12 @@ function routeBuild(day, currentRoute,currentSortedAddresses) {
         });
         optimizeUrl = optimizeUrl.slice(0, -1);
         optimizeUrl += "?access_token=" + mapboxgl.accessToken;
-        optimizeUrl += "&geometries=geojson&overview=full&steps=true&source=first&destination=last&roundtrip=false";
+        optimizeUrl +=
+          "&geometries=geojson&overview=full&steps=true&source=first&destination=last&roundtrip=false";
         optimizeUrl += "&approaches=" + approachParam.repeat(coords.length - 1);
 
-        console.log(optimizeUrl)
-        
+        console.log(optimizeUrl);
+
         fetch(optimizeUrl)
           .then((res) => res.json())
           .then((res) => {
@@ -356,11 +364,11 @@ const setOverview = function (route) {
       const nextDelivery = waypoints.find(
         ({ waypoint_index }) => waypoint_index === i + 1
       );
-        if(i == 0) {
-          listItem.innerHTML = `<b>Proceed With Route</b>`;
-        } else {
-          listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address}</b>`;
-        }
+      if (i == 0) {
+        listItem.innerHTML = `<b>Proceed With Route</b>`;
+      } else {
+        listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address}</b>`;
+      }
     }
 
     addressList.appendChild(listItem);
@@ -410,7 +418,6 @@ const setStops = function (stops) {
 };
 
 function sortAddresses(addresses) {
-  updateUserLocation();
   var allDistancesAndAddress = [];
 
   for (var i = 0; i < addresses.length; i++) {

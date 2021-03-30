@@ -230,7 +230,8 @@ function updateUserLocation() {
   });
 }
 
-function routeBuild(day, currentRoute) {
+
+function routeBuild(day, currentRoute,currentSortedAddresses) {
   instructions.style.display = "";
   updateUserLocation();
   // map.flyTo({
@@ -241,7 +242,9 @@ function routeBuild(day, currentRoute) {
   //document.getElementById("nextRouteButton").style.display = "";
   const API_URL_MONDAY = "https://www.routeplan.xyz/api/logs/find" + day;
 
+  
   const locations = getLocations(API_URL_MONDAY);
+
 
   var addresses = [];
   locations
@@ -258,7 +261,10 @@ function routeBuild(day, currentRoute) {
         },
       });
 
+      
       var sortedAddresses = sortAddresses(addresses);
+      
+    
 
       var seperatedSections = [];
 
@@ -273,6 +279,7 @@ function routeBuild(day, currentRoute) {
             latitude: userLocation[0],
           },
         });
+        section = sortAddresses(section);
         seperatedSections.push(section);
       }
 
@@ -314,7 +321,7 @@ function routeBuild(day, currentRoute) {
             button.textContent = "Continue";
             button.onclick = () => {
               currentRoute += 1;
-              routeBuild(day, currentRoute);
+              routeBuild(day, currentRoute, sortedAddresses);
             };
           });
       } else {

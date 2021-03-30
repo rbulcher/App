@@ -244,6 +244,9 @@ function getStartLocation() {
 
 
 function routeBuild(day, currentRoute) {
+  if(currentRoute == 0) {
+    getStartLocation();
+  }
   instructions.style.display = "";
   updateUserLocation();
   // map.flyTo({
@@ -260,7 +263,7 @@ function routeBuild(day, currentRoute) {
   locations
     .then((data) => (addresses = data))
     .then(() => {
-      getStartLocation();
+      
       const coords = [];
 
       addresses.unshift({

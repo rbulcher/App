@@ -279,7 +279,7 @@ function routeBuild(day, currentRoute,currentSortedAddresses) {
             latitude: userLocation[0],
           },
         });
-        
+
         seperatedSections.push(section);
       }
 
@@ -410,6 +410,7 @@ const setStops = function (stops) {
 };
 
 function sortAddresses(addresses) {
+  updateUserLocation();
   var allDistancesAndAddress = [];
 
   for (var i = 0; i < addresses.length; i++) {

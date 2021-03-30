@@ -44,31 +44,31 @@
                       id: "basic-nav-dropdown",
                       children: [
                         Object(j.jsx)(d.a.Item, {
-                          onClick: () => routeBuild("Monday"),
+                          onClick: () => routeBuild("Monday",0),
                           children: "Monday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          onClick: () => routeBuild("Tuesday"),
+                          onClick: () => routeBuild("Tuesday",0),
                           children: "Tuesday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          onClick: () => routeBuild("Wednesday"),
+                          onClick: () => routeBuild("Wednesday",0),
                           children: "Wednesday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          onClick: () => routeBuild("Thursday"),
+                          onClick: () => routeBuild("Thursday",0),
                           children: "Thursday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          onClick: () => routeBuild("Friday"),
+                          onClick: () => routeBuild("Friday",0),
                           children: "Friday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          onClick: () => routeBuild("Saturday"),
+                          onClick: () => routeBuild("Saturday",0),
                           children: "Saturday",
                         }),
                         Object(j.jsx)(d.a.Item, {
-                          onClick: () => routeBuild("Sunday"),
+                          onClick: () => routeBuild("Sunday",0),
                           children: "Sunday",
                         }),
                       ],

@@ -16,10 +16,6 @@ function successLocation(position) {
   setupMap();
 }
 
-function finishRoute() {
-  location.reload();
-}
-
 function errorLocation() {
   setupMap();
   alert(
@@ -234,13 +230,13 @@ function updateUserLocation() {
   });
 }
 
-function routeBuild(day) {
+function routeBuild(day, currentRoute) {
   instructions.style.display = "";
   updateUserLocation();
-  map.flyTo({
-    center: userLocation,
-    zoom: 17,
-  });
+  // map.flyTo({
+  //   center: userLocation,
+  //   zoom: 17,
+  // });
   //mapDiv.style.height = "90vh";
   //document.getElementById("nextRouteButton").style.display = "";
   const API_URL_MONDAY = "https://www.routeplan.xyz/api/logs/find" + day;
@@ -262,37 +258,69 @@ function routeBuild(day) {
         },
       });
 
-      addresses.forEach((address) => {
-        coords.push(address.location);
-      });
+      var sortedAddresses = sortAddresses(addresses);
 
-      const approachParam = ";curb";
-      let optimizeUrl = "https://api.mapbox.com/optimized-trips/v1/";
-      optimizeUrl += "mapbox/driving-traffic/";
-      coords.forEach((coord) => {
-        optimizeUrl += coord.latitude + "," + coord.longitude + ";";
-      });
-      optimizeUrl = optimizeUrl.slice(0, -1);
-      optimizeUrl += "?access_token=" + mapboxgl.accessToken;
-      optimizeUrl += "&geometries=geojson&&overview=full&steps=true";
-      optimizeUrl += "&approaches=" + approachParam.repeat(coords.length - 1);
-      // To inspect the response in the browser, remove for production
+      var seperatedSections = [];
 
-      fetch(optimizeUrl)
-        .then((res) => res.json())
-        .then((res) => {
-          res.waypoints.forEach((waypoint, i) => {
-            waypoint.address =
-              waypoint[i] == 0 ? "Start" : addresses[i].address;
-          });
-
-          // Add the distance, duration, and turn-by-turn instructions to the sidebar
-          setOverview(res);
-
-          // Draw the route anps on the map
-          setTripLine(res.trips[0]);
-          setStops(res.waypoints);
+      while (sortedAddresses.length > 0) {
+        var section = [];
+        section = sortedAddresses.splice(0, 11);
+        updateUserLocation();
+        section.unshift({
+          address: "Start Point",
+          location: {
+            longitude: userLocation[1],
+            latitude: userLocation[0],
+          },
         });
+        seperatedSections.push(section);
+      }
+
+      if (currentRoute < seperatedSections.length) {
+        var currentAddresses = seperatedSections[currentRoute];
+
+        currentAddresses.forEach((address) => {
+          coords.push(address.location);
+        });
+
+        const approachParam = ";curb";
+        let optimizeUrl = "https://api.mapbox.com/optimized-trips/v1/";
+        optimizeUrl += "mapbox/driving-traffic/";
+        coords.forEach((coord) => {
+          optimizeUrl += coord.latitude + "," + coord.longitude + ";";
+        });
+        optimizeUrl = optimizeUrl.slice(0, -1);
+        optimizeUrl += "?access_token=" + mapboxgl.accessToken;
+        optimizeUrl += "&geometries=geojson&overview=full&steps=true&source=first&destination=last&roundtrip=false";
+        optimizeUrl += "&approaches=" + approachParam.repeat(coords.length - 1);
+
+        console.log(optimizeUrl)
+        
+        fetch(optimizeUrl)
+          .then((res) => res.json())
+          .then((res) => {
+            res.waypoints.forEach((waypoint, i) => {
+              waypoint.address =
+                waypoint[i] == 0 ? "Start" : currentAddresses[i].address;
+            });
+            // Add the distance, duration, and turn-by-turn instructions to the sidebar
+            setOverview(res);
+
+            // Draw the route anps on the map
+            setTripLine(res.trips[0]);
+            setStops(res.waypoints);
+
+            let button = document.getElementById("finished-route-button");
+            button.textContent = "Continue";
+            button.onclick = () => {
+              currentRoute += 1;
+              routeBuild(day, currentRoute);
+            };
+          });
+      } else {
+        alert("Finished Route");
+        location.reload();
+      }
     });
 
   async function getLocations(API_URL) {
@@ -317,16 +345,17 @@ const setOverview = function (route) {
   trip.legs.forEach((leg, i) => {
     const listItem = document.createElement("li");
     // We want the destination address when we depart, hence index + 1
-    if (i < trip.legs.length - 1) {
+    if (i < trip.legs.length) {
       const nextDelivery = waypoints.find(
         ({ waypoint_index }) => waypoint_index === i + 1
       );
-
-      listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address}</b>`;
-    } else {
-      // We're outside the range of deliveries, so let's go home
-      listItem.innerHTML = `<b>Return to Start Location</b>`;
+        if(i == 0) {
+          listItem.innerHTML = `<b>Proceed With Route</b>`;
+        } else {
+          listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address}</b>`;
+        }
     }
+
     addressList.appendChild(listItem);
     // add the TBT instructions for this leg
     leg.steps.forEach((step) => {
@@ -372,3 +401,53 @@ const setStops = function (stops) {
   });
   map.getSource("deliveries").setData(deliveries);
 };
+
+function sortAddresses(addresses) {
+  var allDistancesAndAddress = [];
+
+  for (var i = 0; i < addresses.length; i++) {
+    var currentAddress = addresses[i];
+    var lat = currentAddress.location.latitude;
+    var lon = currentAddress.location.longitude;
+
+    var distanceFromUser = getDistanceFromLatLonInKm(
+      userLocation[0],
+      userLocation[1],
+      lat,
+      lon
+    );
+    allDistancesAndAddress.push({
+      distanceFromUser,
+      currentAddress,
+    });
+  }
+
+  var sorted = allDistancesAndAddress.sort((a, b) => {
+    return a.distanceFromUser - b.distanceFromUser;
+  });
+
+  var sortedAddressObjects = [];
+  sorted.forEach((obj) => {
+    sortedAddressObjects.push(obj.currentAddress);
+  });
+  return sortedAddressObjects;
+}
+
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
+  var dLon = deg2rad(lon2 - lon1);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c; // Distance in km
+  return d; // distance returned
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}

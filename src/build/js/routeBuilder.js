@@ -77,7 +77,7 @@ function displayDayRoute(day, dayAbreviation) {
         div.appendChild(deliverDateAndType);
         div.appendChild(descriptionVal);
         div.appendChild(editButton);
-        div.appendChild(deleteButton)
+        div.appendChild(deleteButton);
         displayRoutes.appendChild(div);
       }
     });
@@ -86,16 +86,15 @@ function displayDayRoute(day, dayAbreviation) {
 
 function deleteEntry(id, address) {
   const API_DELETE_ONE = "https://www.routeplan.xyz/api/logs/deleteOne/" + id;
-  const confirmDelete = confirm("Delete Address: " + address) 
-  if(confirmDelete) {
+  const confirmDelete = confirm("Delete Address: " + address);
+  if (confirmDelete) {
     try {
-    fetch(API_DELETE_ONE);
-    alert("Successfully Deleted");
-    document.getElementById(id).remove();
+      fetch(API_DELETE_ONE);
+      alert("Successfully Deleted");
+      document.getElementById(id).remove();
     } catch (error) {
       alert("ERROR: " + error);
     }
-    
   }
 }
 
@@ -214,15 +213,13 @@ function routeSunday() {
 }
 
 function deleteRoutes() {
-
-  var confirmDelete = confirm("Are you sure you want to delete every address?") 
-  if(confirmDelete) { 
+  var confirmDelete = confirm("Are you sure you want to delete every address?");
+  if (confirmDelete) {
     try {
-      fetch("https://www.routeplan.xyz/api/logs/deleteAllRoutes")
-      alert("Successfully deleted all address entries!")
+      fetch("https://www.routeplan.xyz/api/logs/deleteAllRoutes");
+      alert("Successfully deleted all address entries!");
     } catch (error) {
-      alert("ERROR: " + error)
+      alert("ERROR: " + error);
     }
-    
-  } 
+  }
 }

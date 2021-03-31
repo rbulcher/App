@@ -255,9 +255,9 @@ function routeBuild(day, currentRoute) {
   // });
   //mapDiv.style.height = "90vh";
   //document.getElementById("nextRouteButton").style.display = "";
-  const API_URL_MONDAY = "https://www.routeplan.xyz/api/logs/find" + day;
+  const API_URL_DAY = "https://www.routeplan.xyz/api/logs/find" + day;
 
-  const locations = getLocations(API_URL_MONDAY);
+  const locations = getLocations(API_URL_DAY);
 
   var addresses = [];
   locations
@@ -312,8 +312,7 @@ function routeBuild(day, currentRoute) {
           "&geometries=geojson&overview=full&steps=true&source=first&destination=last&roundtrip=false";
         optimizeUrl += "&approaches=" + approachParam.repeat(coords.length - 1);
 
-        console.log(optimizeUrl);
-
+        
         fetch(optimizeUrl)
           .then((res) => res.json())
           .then((res) => {
@@ -322,7 +321,7 @@ function routeBuild(day, currentRoute) {
                 waypoint[i] == 0 ? "Start" : currentAddresses[i].address;
             });
             // Add the distance, duration, and turn-by-turn instructions to the sidebar
-            setOverview(res);
+            setOverview(res, day);
 
             // Draw the route anps on the map
             setTripLine(res.trips[0]);
@@ -350,7 +349,15 @@ function routeBuild(day, currentRoute) {
 const titleText = document.getElementById("title");
 const addressList = document.getElementById("addresses");
 
-const setOverview = function (route) {
+const setOverview = async function (route, day) {
+
+  const API_URL_DAY = "https://www.routeplan.xyz/api/logs/find" + day;
+  const locations = getLocations(API_URL_DAY);
+
+  var addresses = [];
+  await locations
+    .then((data) => (addresses = data))
+
   const trip = route.trips[0];
   const waypoints = route.waypoints;
   // Set some basic stats for the route in the sidebar
@@ -370,7 +377,38 @@ const setOverview = function (route) {
       if (i == 0) {
         listItem.innerHTML = `<b>Proceed With Route</b>`;
       } else {
-        listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address}</b>`;
+        let dateAndType = "";
+        for (let i = 0; i < addresses.length; i++) {
+          const address = addresses[i];
+          if(address.address == nextDelivery.address){
+            dateAndType = address.deliverDateAndType;
+            let dayAbreviation = "";
+            if(day === "Monday"){ dayAbreviation = "Mon" }
+            if(day === "Tuesday") {dayAbreviation = "Tue"}
+            if(day === "Wednesday"){ dayAbreviation = "Wed"}
+            if(day === "Thursday") {dayAbreviation = "Thur"}
+            if(day === "Friday") {dayAbreviation = "Fri"}
+            if(day === "Saturday"){ dayAbreviation = "Sat"}
+            if(day === "Sunday"){ dayAbreviation = "Sun"}
+
+            let start = dateAndType.search(dayAbreviation);
+            let splitFromStart = dateAndType.substring(start,dateAndType.length - 1);
+            let findFinish = "";
+
+            if(day === "Monday"){ findFinish = "Tue" }
+            if(day === "Tuesday") {findFinish = "Wed"}
+            if(day === "Wednesday"){ findFinish = "Thur"}
+            if(day === "Thursday") {findFinish = "Fri"}
+            if(day === "Friday") {findFinish = "Sat"}
+            if(day === "Saturday"){ findFinish = "Sun"}
+
+            let finish = splitFromStart.search(findFinish);
+            if(finish == "") {finish = splitFromStart.length -1}
+
+            dateAndType = splitFromStart.substring(0,finish);
+          }
+        }
+        listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address} : ${dateAndType}</b>`;
       }
     }
 

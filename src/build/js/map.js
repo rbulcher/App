@@ -266,14 +266,6 @@ function routeBuild(day, currentRoute) {
       
       const coords = [];
 
-      addresses.unshift({
-        address: "Start Point",
-        location: {
-          longitude: userStartLocation[1],
-          latitude: userStartLocation[0],
-        },
-      });
-
       var sortedAddresses = sortAddresses(addresses);
 
       var seperatedSections = [];
@@ -349,6 +341,7 @@ function routeBuild(day, currentRoute) {
 const titleText = document.getElementById("title");
 const addressList = document.getElementById("addresses");
 
+
 const setOverview = async function (route, day) {
 
   const API_URL_DAY = "https://www.routeplan.xyz/api/logs/find" + day;
@@ -369,10 +362,11 @@ const setOverview = async function (route, day) {
   // Add the delivery addresses and turn-by-turn instructions to the sidebar for each leg of the trip
   trip.legs.forEach((leg, i) => {
     const listItem = document.createElement("li");
+    
     // We want the destination address when we depart, hence index + 1
     if (i < trip.legs.length) {
       const nextDelivery = waypoints.find(
-        ({ waypoint_index }) => waypoint_index === i + 1
+        ({ waypoint_index }) => waypoint_index === i
       );
       if (i == 0) {
         listItem.innerHTML = `<b>Proceed With Route</b>`;
@@ -406,9 +400,10 @@ const setOverview = async function (route, day) {
             if(finish == "") {finish = splitFromStart.length -1}
 
             dateAndType = splitFromStart.substring(0,finish);
+            newsPaperType = dateAndType.substring(4,dateAndType.length);
           }
         }
-        listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address} : ${dateAndType}</b>`;
+        listItem.innerHTML = `<b>Deliver to: ${nextDelivery.address} : Paper Type - [${newsPaperType}]</b>`;
       }
     }
 

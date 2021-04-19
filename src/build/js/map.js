@@ -435,6 +435,7 @@ const setOverview = async function (route, day) {
     addressList.appendChild(listItem);
     // add the TBT instructions for this leg
     setInterval(() => {
+      console.log("checkStep");
       leg.steps.forEach((step) => {
         stepX = step.geometry.coordinates[0][0];
         stepY = step.geometry.coordinates[0][1];
